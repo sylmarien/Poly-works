@@ -1,3 +1,0 @@
-[submodule "convolutional_autoencoder"]
-	path = convolutional_autoencoder
-	url = git@github.com:sylmarien/convolutional_autoencoder.git

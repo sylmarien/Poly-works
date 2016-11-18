@@ -1,0 +1,3 @@
+[submodule "INF8225/Project/convolutional_autoencoder"]
+	path = INF8225/Project/convolutional_autoencoder
+	url = https://github.com/sylmarien/convolutional_autoencoder.git
