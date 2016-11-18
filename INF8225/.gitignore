@@ -1,0 +1,7 @@
+*.asv
+*.swp
+*.aux
+*.log
+*.out
+*.synctex.gz
+TP2/create_train_valid_test_splits.asv

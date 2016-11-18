@@ -1,0 +1,40 @@
+# Variables :
+
+# Initialize parameters randomly and bias to 0
+for each theta in (\theta_firstHiddenLayer,\theta_secondHiddenLayer, \theta_outputLayer) do
+  W <- rand()
+  b <- 0
+
+while loss function didn't converge
+  Segmentation of the input and output training data in minibatches miniBatchesInput and miniBatchesOutput
+  for each (X,Y) in (miniBatchesInput, miniBatchesOutput) do
+    # feed forward
+    Adding a line of 1 at the end of X (bias)
+    activation_firstHiddenLayer = activationFunction(\theta_firstHiddenLayer * X)
+    Adding a line of 1 at the end of X activation_firstHiddenLayer (bias)
+    activation_secondHiddenLayer = activationFunction(\theta_secondHiddenLayer * activation_firstHiddenLayer)
+    Adding a line of 1 at the end of X activation_secondHiddenLayer (bias)
+    activation_outputLayer = outputActivationFunction(\theta_outputLayer * activation_secondHiddenLayer)
+
+    # Back propagation
+    delta_outputLayer = - (Y - activation_outputLayer)
+    gradientW_outputLayer = delta_outputLayer * activation_secondHiddenLayer[:,:-1] # Without the bias
+    gradientB_outputLayer = delta_outputLayer * activation_secondHiddenLayer[:,-1] # Only the bias
+
+    delta_secondHiddenLayer = derivatedActivationFunction(activation_firstHiddenLayer) * \theta_outputLayer * delta_outputLayer
+    gradientW_secondHiddenLayer = delta_secondHiddenLayer * activation_firstHiddenLayer[:,:-1] # Without the bias
+    gradientB_secondHiddenLayer = delta_secondHiddenLayer * activation_firstHiddenLayer[:,-1] # Only the bias
+
+    delta_secondHiddenLayer = derivatedActivationFunction(X) * \theta_secondHiddenLayer * delta_secondHiddenLayer
+    gradientW_firstHiddenLayer = delta_firstHiddenLayer * X[:,:-1] # Without the bias
+    gradientB_firstHiddenLayer = delta_firstHiddenLayer * X[:,-1] # Only the bias
+
+    # Parameters update
+    \theta_firstHiddenLayer[:,:-1] = \theta_firstHiddenLayer[:,:-1] - learningRate * gradientW_firstHiddenLayer # Without the bias
+    \theta_firstHiddenLayer[:,-1] = \theta_firstHiddenLayer[:,-1] - learningRate * gradientB_firstHiddenLayer # Only the bias
+
+    \theta_secondHiddenLayer[:,:-1] = \theta_secondHiddenLayer[:,:-1] - learningRate * gradientW_secondHiddenLayer # Without the bias
+    \theta_secondHiddenLayer[:,-1] = \theta_secondHiddenLayer[:,-1] - learningRate * gradientB_secondHiddenLayer # Only the bias
+
+    \theta_outputLayer[:,:-1] = \theta_outputLayer[:,:-1] - learningRate * gradientW_outputLayer # Without the bias
+    \theta_outputLayer[:,-1] = \theta_outputLayer[:,-1] - learningRate * gradientB_outputLayer # Only the bias

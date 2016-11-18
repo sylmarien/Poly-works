@@ -1,0 +1,49 @@
+\begin{thebibliography}{1}
+
+\bibitem{DBLP}
+Brian Cheung, Jesse~A. Livezey, Arjun~K. Bansal, and Bruno~A. Olshausen.
+\newblock Discovering hidden factors of variation in deep networks.
+\newblock {\em CoRR}, abs/1412.6583, 2014.
+
+\bibitem{7294921}
+K.~Cho and X.~Chen.
+\newblock Classifying and visualizing motion capture sequences using deep
+  neural networks.
+\newblock In {\em Computer Vision Theory and Applications (VISAPP), 2014
+  International Conference on}, volume~2, pages 122--130, Jan 2014.
+
+\bibitem{NIPS2012_4824}
+Alex Krizhevsky, Ilya Sutskever, and Geoffrey~E. Hinton.
+\newblock Imagenet classification with deep convolutional neural networks.
+\newblock In F.~Pereira, C.~J.~C. Burges, L.~Bottou, and K.~Q. Weinberger,
+  editors, {\em Advances in Neural Information Processing Systems 25}, pages
+  1097--1105. Curran Associates, Inc., 2012.
+
+\bibitem{MNIST}
+Yann LeCun, Corinna Cortes, and Christopher~J.C. Burges.
+\newblock The mnist database.
+\newblock \url{http://yann.lecun.com/exdb/mnist/}, 2015.
+\newblock [Online; accessed 19-Apr-2016].
+
+\bibitem{Masci2011}
+Jonathan Masci, Ueli Meier, Dan Cire{\c{s}}an, and J{\"u}rgen Schmidhuber.
+\newblock {\em Artificial Neural Networks and Machine Learning -- ICANN 2011:
+  21st International Conference on Artificial Neural Networks, Espoo, Finland,
+  June 14-17, 2011, Proceedings, Part I}, chapter Stacked Convolutional
+  Auto-Encoders for Hierarchical Feature Extraction, pages 52--59.
+\newblock Springer Berlin Heidelberg, Berlin, Heidelberg, 2011.
+
+\bibitem{CAE}
+mikesj public.
+\newblock convolutional\_autoencoder.
+\newblock \url{https://github.com/mikesj-public/convolutional\_autoencoder},
+  2015.
+\newblock [Online; accessed 19-Apr-2016].
+
+\bibitem{denoising}
+Pascal Vincent, Hugo Larochelle, Yoshua Bengio, and Pierre-Antoine Manzagol.
+\newblock Extracting and composing robust features with denoising autoencoders.
+\newblock In {\em Proceedings of the 25th International Conference on Machine
+  Learning}, ICML '08, pages 1096--1103, New York, NY, USA, 2008. ACM.
+
+\end{thebibliography}

@@ -1,0 +1,18 @@
+Les fichiers initiaux du TP nous fournissent une représentation de l'univers fictif avec l'affichage de 4 plans perpendiculaires pour modéliser les limites de celui-ci.
+Dans la première partie du TP, nous avons modélisé des particules naissant à partir du puits se situant vers le centre de notre espace délimité par nos différents plans. 
+Chaque particule se voit attribuer différentes caractéristiques initiales : une vitesse aléatoire en direction et en norme, une couleur fixée entre deux constantes \textit{COULMIN} et \textit{COULMAX}, une durée de vie déterminée aléatoirement entre 0 et \textit{tempsVieMax} secondes (initialement fixé à 5 secondes).
+Nous utilisons 2 VAOs pour dessiner les parois de l'espace virtuel pour l'un et les particules pour l'autre.
+Nous modélisons la gravité par l'ajout d'une force selon l'axe des z qui agit sur chaque particule.
+La coordonnée selon l'axe z de chaque particule se voit donc, pour chaque unité de temps écoulée, soustraite l'effet de cette force par cette durée.
+De cette façon chaque particule décrit un mouvement correspondant à une chute libre.
+Elles sont de plus soumises à des collisions avec les parois de l'espace fictif, qui délimite le volume dans lequel elles peuvent évoluer, sous la forme de chocs rigides.
+Pour implémenter cette fonctionnalité, lorsqu'on détecte une collision sous la forme de la présence d'une particule en dehors du volume autorisé, on effectue la réflexion du vecteur vitesse de celle-ci par rapport au plan traversé:
+De cette façon, la particule effectue son retour dans l'espace délimité lors de la prochaine itération et ce sans perte d'énergie.
+Pour afficher les particules à l'aide de lutins, nous créons dans le nuanceur de géométrie un carré autour du point représentant chacune d'elles afin d'y appliquer une texture dans le nuanceur de fragment et n'afficher à l'écran que la zone colorée.
+
+Dans la seconde partie, nous implémentons la sélection 3D  par couleur.
+Pour cela, nous fournissons à chaque particules un identifiant unique sous la forme d'une couleur que l'on n'affichera pas mais qui permettra leur distinction lorsque l'on effectuera un clic de souris pour en sélectionner une.
+Cet identifiant est donc codé sur trois octets (les trois octets du code de couleur RGB), ce qui permet un maximum de \begin{math} 2^{24} \end{math} particules uniques.
+Chaque particule se voit attribué cet identifiant unique lors de sa création initiale : la \textit{ième} particule créée se voit attribuer l'identifiant \textit{(i mod 255, (i/255) mod 255, (i/\begin{math} 255^{2} \end{math}) mod 255)}.
+En particulier, lorsqu'une particule est réinitialisée, son identifiant n'est pas modifié.
+La ré-initialisation, qu'elle soit manuelle ou due à la fin de vie de la particule, consiste donc en la génération de nouvelles valeurs pour toutes ses caractéristiques hormis celle liée à la sélection.

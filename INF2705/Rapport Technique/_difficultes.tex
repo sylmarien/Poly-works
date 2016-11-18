@@ -1,0 +1,13 @@
+Lors du développement nous avons rencontrées divers difficultés concernant la représentation de certaines points spécifiques du TP.
+
+La première d'entre elles est liée à la gestion des collisions avec les parois.
+En effet, en fonction du choix d'actualiser la vitesse avant ou après son inversion suite à la collision, on a un effet indésirable de particules bloquées en dessous du volume si on le fait avant et au dessus si on le fait après, comme expliqué dans la partie précédente.
+Comme ce second cas est plus rare et nécessite des conditions particulières pour être observé (gravité forte et durée de vie longue pour les particules), nous avons fait le choix d'utiliser cette alternative.
+Cependant, une véritable solution à ce problème serait de changer le traitement des collisions comme proposé dans la partie précédente.
+
+Dans la seconde partie du TP, nous avions utilisé l'idée simple lors de la sélection d'une particule, de l'identifier grâce à sa couleur d'affichage, attribuée aléatoirement lors de son initialisation.
+Cependant nous avons remarqué que non seulement cette couleur n'était pas unique mais également qu'une particule affichée à l'écran n'était pas constituée d'une seule et unique couleur à cause de l'interpolation de la couleur dans le nuanceur de fragment au moment d'appliquer la texture.
+Pour résoudre ce problème, nous avons dû attribuer une couleur unique non affichée à chaque particule, comme expliqué dans la partie précédente, puis nous traitions la sélection en considérant le tampon arrière non affiché dans lequel on traçait les particules avec leur couleur unique.
+Cette implémentation de la sélection nous permettait alors bien de discerner toutes les particules et ce pour un nombre de particules allant jusqu'à plus de 16 millions, nombre bien supérieur à ce que l'on considérait en pratique.
+
+

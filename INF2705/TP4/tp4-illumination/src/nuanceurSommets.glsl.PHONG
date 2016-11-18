@@ -1,0 +1,74 @@
+#version 430
+
+// Définition des paramètres des sources de lumière
+struct LightSourceParameters
+{
+   vec4 ambient;
+   vec4 diffuse;
+   vec4 specular;
+   vec4 position;
+   vec3 spotDirection;
+   float spotExponent;
+   float spotCutoff;            // ([0.0,90.0] ou 180.0)
+   float constantAttenuation;
+   float linearAttenuation;
+   float quadraticAttenuation;
+};
+uniform LightSourceParameters LightSource[3];
+
+// Définition des paramètres des matériaux
+struct MaterialParameters
+{
+   vec4 emission;
+   vec4 ambient;
+   vec4 diffuse;
+   vec4 specular;
+   float shininess;
+};
+uniform MaterialParameters FrontMaterial;
+uniform MaterialParameters BackMaterial;
+
+// Définition des paramètres globaux du modèle de lumière
+struct LightModelParameters
+{
+   vec4 ambient;       // couleur ambiante
+   bool localViewer;   // observateur local ou à l'infini?
+   bool twoSide;       // éclairage sur les deux côtés ou un seul?
+};
+uniform LightModelParameters LightModel;
+
+layout(location=0) uniform mat4 matrModel;
+layout(location=4) uniform mat4 matrVisu;
+layout(location=8) uniform mat4 matrProj;
+layout(location=12) uniform mat3 matrNormale;
+
+/////////////////////////////////////////////////////////////////
+
+layout(location=0) in vec4 Vertex;
+layout(location=2) in vec3 Normal;
+layout(location=3) in vec4 Color;
+layout(location=8) in vec4 MultiTexCoord0;
+//layout(location=9) in vec4 MultiTexCoord1;
+
+uniform int typeIllumination;
+uniform int utiliseCouleur;
+uniform int utiliseBlinn;
+
+out vec3 normal, lightDir, eyeVec;
+
+void main( void )
+{
+// transformation standard du sommet (ModelView et Projection)
+   gl_Position = matrProj * matrVisu * matrModel * Vertex;
+
+   // calculer la normale qui sera interpolée pour le nuanceur de fragment
+   vec3 normal = matrNormale * Normal;
+   //normal = normalize( gl_NormalMatrix * gl_Normal );
+
+   // calculer la position du sommet dans l'espace de la caméra ("eye-coordinate position")
+   vec3 ecPosition = vec3( matrVisu * matrModel * Vertex );
+
+   // vecteur de la direction de la lumière (gl_LightSource[0].position est déjà dans le repère de l'oeil)
+   lightDir = vec3( matrVisu * LightSource[0].position) - ecPosition;
+   eyeVec = -ecPosition; // vecteur qui pointe vers le (0,0,0), c'est-à-dire vers l'oeil
+}

@@ -1,0 +1,305 @@
+\documentclass[12pt]{article}
+\usepackage[frenchb]{babel} 
+\usepackage[T1]{fontenc}
+\usepackage[latin1]{inputenc}
+%\usepackage{lmodern} 
+\usepackage{graphicx}
+\usepackage{multirow}
+\usepackage[top=2.5cm, bottom=2.5cm, left=2.5cm , right=2.5cm]{geometry}
+%\usepackage{amsmath}
+%\usepackage{amsthm}
+%\usepackage{amsfonts}
+\usepackage{empheq}
+\usepackage{setspace}
+\usepackage{hyperref}
+\hypersetup{pdftitle = {INF8225 - Intelligence Artificielle}, pdfauthor={Maxime Schmitt}}
+\usepackage{color}
+\usepackage{subfigure}
+\usepackage{fancyvrb}
+\usepackage{SIunits}
+\usepackage{numprint}
+\usepackage{enumitem}
+\usepackage{calc}
+\usepackage{listings}
+\usepackage{float}
+\usepackage{cellspace}
+\cellspacetoplimit=4pt
+\cellspacebottomlimit=4pt
+
+% ----------------------------------- FANCY HEADER -----------------------------------
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\renewcommand{\headrulewidth}{0.5pt}
+%\fancyhead[C]{\textbf{page \thepage}} 
+\fancyhead[L]{}
+\fancyhead[R]{Rapport de laboratoire 1}
+
+\renewcommand{\footrulewidth}{0.5pt}
+\fancyfoot[C]{\textbf{\thepage}} 
+\fancyfoot[L]{Polytechnique Montréal}
+\fancyfoot[R]{INF8225}
+% ------------------------------------------------------------------------------------
+
+
+\providecommand{\e}[1]{\ensuremath{\cdot 10^{#1}}}
+\newcommand{\question}{\noindent$\bullet$\;\;}
+\newcommand{\eau}{\ensuremath{\text{H}_2 \text{O}}}
+\newcommand{\dio}{\ensuremath{\text{CO}_2}}
+%\addto\captionsfrancais{\renewcommand{\chaptername}{Labo}}
+
+\definecolor{mygreen}{RGB}{28,172,0} % color values Red, Green, Blue
+\definecolor{mylilas}{RGB}{170,55,241}
+
+\begin{document}
+	
+\lstset{language=Matlab,%
+	%basicstyle=\color{red},
+	breaklines=true,%
+	morekeywords={matlab2tikz},
+	keywordstyle=\color{blue},%
+	morekeywords=[2]{1}, keywordstyle=[2]{\color{black}},
+	identifierstyle=\color{black},%
+	stringstyle=\color{mylilas},
+	commentstyle=\color{mygreen},%
+	showstringspaces=false,%without this there will be a symbol in the places where there is a space
+	numbers=left,%
+	numberstyle={\tiny \color{black}},% size of the numbers
+	numbersep=9pt, % this defines how far the numbers are from the text
+	emph=[1]{for,end,break},emphstyle=[1]\color{red}, %some words to emphasise
+	%emph=[2]{word1,word2}, emphstyle=[2]{style},    
+}
+
+\hyphenation{HyperLogLog experimental techno-logy according develop-ment}
+
+\begin{titlepage}
+\newcommand{\HRule}{\rule{\linewidth}{0.5mm}} % Defines a new command for the horizontal lines, change thickness here
+
+%-------------------------------------------------------------------------------------
+%	LOGO SECTION
+%-------------------------------------------------------------------------------------
+\raggedright
+\center \includegraphics[width = 0.33\textwidth]{../../logo}\\[5cm] 
+\centering
+%-------------------------------------------------------------------------------------
+%	TITLE SECTION
+%-------------------------------------------------------------------------------------
+\HRule \\[0.4cm]
+{ \huge \bfseries INF8225 TP2 - Rapport de laboratoire}\\[0.4cm] 
+{ \Large \bfseries Apprentissage automatique par descente de gradiant}\\
+\HRule \\[1cm]
+%-------------------------------------------------------------------------------------
+%	AUTHOR SECTION
+%-------------------------------------------------------------------------------------
+%\begin{minipage}{0.45\textwidth}
+%\begin{center} 
+%\large
+%Julien \textsc{Antoine}\\
+%1813026
+%\end{center}
+%\end{minipage}
+%~
+%\begin{minipage}{0.45\textwidth}
+\vspace{\fill}
+\begin{center} 
+\large
+Maxime \textsc{Schmitt}\\
+1719088
+\end{center}
+%\end{minipage}\\[8cm]
+%-------------------------------------------------------------------------------------
+%	DATE SECTION
+%-------------------------------------------------------------------------------------
+\begin{center}
+{\Large \today}
+\end{center}
+%-------------------------------------------------------------------------------------
+\vfill 
+\end{titlepage}
+
+%\tableofcontents
+
+\section{Partie I - Descente par batch et mini-batch}
+
+Le code pour la descente par batch peut être trouvé dans le fichier \textit{gradientDescent.m} tandis que
+le code pour la descente par mini-batch peut être trouvé dans le fichier
+\textit{miniBatchMultipleShuffle.m}. Dans la suite de cette partie, nous allons présenter puis analyser
+des résultats de l'apprentissage par ces deux méthodes en fonction de la valeur du taux d'apprentissage
+ainsi que celle du nombre de mini-batch utilisés pour la seconde méthode, avant de comparer les deux
+méthodes d'apprentissage. Pour toutes les expériences, la valeur du seuil de convergence qui détermine
+la condition de terminaison de l'apprentissage, lorsque la différence de log-vraisemblance entre deux
+itérations est inférieur à cette valeur, a été fixée à 15, car on a observé la combinaison de résultats
+et d'une durée de convergence raisonnable pour celle-ci.
+
+\subsection{Étude de l'influence du taux d'apprentissage sur l'apprentissage}
+
+On trouve dans les figures~\ref{batchOnly} et~\ref{miniBatchOnly} les résultats des apprentissages
+respectivement pour la méthode par batch et celle par mini-batch. Dans chaque figure, la figure (a)
+illustre les courbes de log-vraisemblance à chaque itération tandis que la figure (b) représente la
+précision sur l'ensemble d'apprentissage et sur l'ensemble de validation à chaque itération. Pour la
+méthode par mini-batch on a choisi un nombre de mini-batches de 20, comme proposé dans l'énoncé.
+
+Une valeur de taux d'apprentissage plus grande entraîne une convergence plus rapide, en nombre
+d'itérations, même si cela n'est pas toujours observable en raison de la nature aléatoire de la
+séparation des données en les différents ensembles (apprentissage, validation, test) qui peuvent apporter
+des résultats très variés. De même, on devrait en général observer une meilleure précision sur
+l'ensemble d'apprentissage avec un taux plus faible avec éventuellement même un risque d'over-fitting
+plus important. Là encore, l'observation est difficilement réalisable pour la même raison.
+
+Enfin, il est important de noter qu'il existe des valeurs pour ce taux d'apprentissage qui représentent
+un problème pour la construction du modèle. La figure~\ref{batchOnlyPathos} présente un tel cas avec une
+valeur de taux d'apprentissage de 0.005. Dans ce cas, le taux est trop grand et les oscillations très
+grandes. On a alors de fortes chances de ne jamais remplir la condition de convergence, et donc de ne pas
+obtenir de système intéressant, alors même que le nombre d'itérations devient important.
+
+\begin{figure}[H] 
+	\centering
+	\subfigure[Log-vraisemblance par itération]{
+		\includegraphics[width = 0.75\textwidth]{../figures/batchLogLikelihood.png}
+		\label{batchLogV} }
+	\quad
+	\subfigure[Précisions par itération]{
+		\includegraphics[width = 0.75\textwidth]{../figures/batchPrecisions.png}
+		\label{batchPrecision} }
+	\caption{Courbes de l'apprentissage par batch} 
+	\label{batchOnly}
+\end{figure}
+
+\begin{figure}[H] 
+	\centering
+	\subfigure[Log-vraisemblance par itération]{
+		\includegraphics[width = 0.75\textwidth]{../figures/multipleMiniBatchLogLikelihood_K20.png}
+		\label{miniBatchLogV} }
+	\quad
+	\subfigure[Précisions par itération]{
+		\includegraphics[width = 0.75\textwidth]{../figures/multipleMiniBatchPrecisions_taux_K20.png}
+		\label{miniBatchPrecision} }
+	\caption{Courbes de l'apprentissage par mini-batch pour un nombre de batches de 20} 
+	\label{miniBatchOnly}
+\end{figure}
+
+\begin{figure}[H] 
+	\centering
+	\subfigure[Log-vraisemblance par itération]{
+		\includegraphics[width = 0.75\textwidth]{../figures/singleLogLikelihood/batchLogLikelihood.png}
+		\label{batchLogVPathos} }
+	\quad
+	\subfigure[Précisions par itération]{
+		\includegraphics[width = 0.75\textwidth]{../figures/singlePrecisions/batchPrecisions_taux0005.png}
+		\label{batchPrecisionPathos} }
+	\caption{Courbes de l'apprentissage par batch} 
+	\label{batchOnlyPathos}
+\end{figure}
+
+\subsection{Étude de l'influence de la taille des mini-batch pour l'apprentissage par mini-batch}
+
+La figure~\ref{miniBatchOnlyK} présente, pour un taux d'apprentissage de 0.0005, l'effet du nombre de
+mini-batches sur l'évolution du log-vraisemblance (figure~\ref{miniBatchLogVK}) et la précision sur
+l'ensemble de validation (figure~\ref{miniBatchPrecisionK}).
+
+On constate qu'un grand nombre de mini-batches entraîne une meilleure précisions, ce qui est logique
+puisque les combinaisons possibles d'arrangement des données forment une représentation plus exhaustive
+de l'ensemble des données. Mais en contre-partie, le nombre d'itérations nécessaires pour arriver à
+convergence est plus grand, en raison de ce plus grand nombre de combinaisons possibles.
+
+\begin{figure}[H] 
+	\centering
+	\subfigure[Log-vraisemblance par itération]{
+		\includegraphics[width = 0.75\textwidth]{../figures/multipleMiniBatchLogLikelihood_VariousK_taux00005.png}
+		\label{miniBatchLogVK} }
+	\quad
+	\subfigure[Précision par itération]{
+		\includegraphics[width = 0.75\textwidth]{../figures/multipleMiniBatchPrecisions_VariousK_taux00005.png}
+		\label{miniBatchPrecisionK} }
+	\caption{Courbes de l'apprentissage par mini-batch pour un nombre de batches de 20} 
+	\label{miniBatchOnlyK}
+\end{figure}
+
+\subsection{Comparaison des deux méthodes d'apprentissage}
+
+La figure~\ref{comp} met en parallèle les résultats obtenus, pour un taux d'apprentissage de 0.0005, avec
+la méthode par batch et avec la méthode par mini-batch pour un nombre de mini-batches de 20. On constate
+donc que cette dernière offre une convergence plus rapide, en nombre d'itérations, et des résultats au
+moins équivalents à ce que l'on obtient avec la première méthode. De plus, comme on l'a vu dans la partie
+précédente, en modifiant le nombre de mini-batches à utiliser, on peut encore améliorer ce résultat tout
+en gardant une convergence plus rapide.
+
+\begin{figure}[H] 
+	\centering
+	\subfigure[Log-vraisemblance par itération]{
+		\includegraphics[width = 0.75\textwidth]{../figures/comparaisonLogLikelihood_taux00005_K20.png}
+		\label{compLogV} }
+	\quad
+	\subfigure[Précision par itération]{
+		\includegraphics[width = 0.75\textwidth]{../figures/comparaisonPrecisions_taux00005_K20.png}
+		\label{compPrecision} }
+	\caption{Courbes de l'apprentissage par mini-batch pour un nombre de batches de 20} 
+	\label{comp}
+\end{figure}
+
+\section{Partie II - Régularisation de type Elastic Net}
+
+Le code pour cette partie peut être trouvé dans le fichier \textit{elasticNet.m}. Les fichiers
+\textit{elasticNetAllTests.m} et \textit{experimentAnalysis.m} contiennent également du code relatif à
+cette partie. Le premier contient le code qui a permis de faire les expériences pour toutes les
+combinaisons de $\lambda{1}$ et $\lambda{2}$ avec le même découpage de l'ensemble de données en les
+ensembles d'apprentissage, de validation et de test. Le second contient le code ayant permis de
+déterminer la meilleur couple ($\lambda{1}$,$\lambda{2}$) différent de (0,0) en terme de précision sur
+l'ensemble de validation, dans notre expérience ce couple est (0.01,0.1).
+
+Pour cette partie, nous avons ajouté 100 caractéristiques aléatoires à notre modèle et nous proposons
+d'effectuer l'apprentissage avec une régularisation dite "Elastic Net". Pour analyser les résultats qui
+suivent, on définit le poids d'un $x_i$ de l'ensemble de données (un $x_i$ représentant donc la présence
+ou nom d'un mot dans un post) comme la somme des valeurs absolues des coefficients de
+$\theta$ associés à cet $x_i$. Cette quantité mesure donc l'importance de la dite caractéristique dans
+la catégorisation de la page dans l'une des quatre catégories. Par extension, on définit le poids d'un
+ensemble de $x_i$ comme la somme de leurs poids respectifs.
+
+La figure~\ref{elasticNet} présente les histogrammes des poids des $x_i$ en séparant ceux-ci en deux
+catégories selon qu'ils soient originaux ou aient été introduits de façon aléatoire comme décrit
+précédemment. Les histogrammes de gauche représentent les poids totaux de ces ensembles dans le cas
+sans régularisation (en haut) et avec régularisation (en bas). Les histogrammes de droite présentent,
+pour les mêmes deux cas, les poids de chacun des $x_i$ individuellement.
+
+La première constatation est que les nouvelles caractéristiques ont des poids bien plus faibles que les
+caractéristiques originales, ce qui est le résultats attendu puisqu'elles ne devraient pas avoir
+d'influence sur l'appartenance à l'une ou l'autre des catégories ayant été déterminées aléatoirement. En
+revanche on constate qu'elles ont un poids plus important lorsqu'on effectue la régularisation de type
+Elastic Net que dans l'autre cas. On voit alors que cette régularisation permet de limiter l'over-fitting
+ce qui se traduit ici par une prise en compte plus importante des paramètres aléatoires.
+
+\begin{figure}[H]
+	\centering
+	\hspace*{-12.5em} \includegraphics[width = 1.6\textwidth]{../figures/ElasticNetBars_taux00005.png}
+	\caption{}
+	\label{elasticNet}
+\end{figure}
+
+\end{document}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

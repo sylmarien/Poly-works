@@ -1,0 +1,91 @@
+#version 430
+
+// Définition des paramètres des sources de lumière
+struct LightSourceParameters
+{
+   vec4 ambient;
+   vec4 diffuse;
+   vec4 specular;
+   vec4 position;
+   vec3 spotDirection;
+   float spotExponent;
+   float spotCutoff;            // ([0.0,90.0] ou 180.0)
+   float constantAttenuation;
+   float linearAttenuation;
+   float quadraticAttenuation;
+};
+uniform LightSourceParameters LightSource[3];
+
+// Définition des paramètres des matériaux
+struct MaterialParameters
+{
+   vec4 emission;
+   vec4 ambient;
+   vec4 diffuse;
+   vec4 specular;
+   float shininess;
+};
+uniform MaterialParameters FrontMaterial;
+uniform MaterialParameters BackMaterial;
+
+// Définition des paramètres globaux du modèle de lumière
+struct LightModelParameters
+{
+   vec4 ambient;       // couleur ambiante
+   bool localViewer;   // observateur local ou à l'infini?
+   bool twoSide;       // éclairage sur les deux côtés ou un seul?
+};
+uniform LightModelParameters LightModel;
+
+/////////////////////////////////////////////////////////////////
+
+uniform int typeIllumination;
+uniform int utiliseBlinn;
+uniform int utiliseDirect;
+
+uniform sampler2D laTexture;
+uniform int utiliseCouleur;
+uniform int texnumero;
+uniform int noirTransparent;
+
+in vec4 couleur;
+in vec3 lightDir, n, eyeVec;
+
+out vec4 FragColor;
+
+void main( void )
+{   
+   vec4 myColor = couleur;
+
+   if (typeIllumination == 1) {
+      // calcul de la composante ambiante
+      myColor = (FrontMaterial.emission + FrontMaterial.ambient * LightModel.ambient) + LightSource[0].ambient * FrontMaterial.ambient;
+   
+      // vecteur normal
+      vec3 N = normalize( n );
+   
+      // direction de la lumière
+      // calcul du vecteur de la surface vers la source lumineuse
+      // normaliser le vecteur de la surface vers la source lumineuse
+      vec3 L = normalize( lightDir );
+   
+      // produit scalaire pour le calcul de la réflexion diffuse
+      // normale . direction de la lumière
+      float NdotL = dot( N, L );
+
+      // calcul de l'éclairage seulement si le produit scalaire est positif
+      if (NdotL < 0.0) {
+         //calcul de la composante diffuse
+         myColor += LightSource[0].diffuse * FrontMaterial.diffuse * NdotL;   
+
+         // calcul de la composante spéculaire
+         vec3 E = normalize( eyeVec );
+         vec3 R = -reflect( L, N ); // réflexion de L par rapport à N
+         // produit scalaire pour la réflexion spéculaire
+         float NdotHV = max( dot( R, E ), 0.0 );
+         myColor += LightSource[0].specular * FrontMaterial.specular * pow( NdotHV, FrontMaterial.shininess );
+      }
+   }
+
+   FragColor = clamp(myColor, 0.0, 1.0);
+}

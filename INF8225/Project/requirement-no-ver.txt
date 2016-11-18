@@ -1,0 +1,11 @@
+funcsigs
+jupyter
+matplotlib
+mock
+nose
+pbr
+pillow
+pyparsing
+python-dateutil
+pytz
+six

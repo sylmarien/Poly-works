@@ -1,0 +1,10 @@
+Le but du TP5, \textit{le système de particules}, est de modéliser l'évolution de particules soumises à un champ de gravité uniforme dans un univers fictif, délimité par des plans perpendiculaires, ainsi que permettre quelques interactions basiques avec celles-ci.
+Ce TP se décompose en deux parties, la première ayant pour objectif l'implémentation des mouvements des particules dans l'espace considéré.
+Pour déterminer les mouvements des particules au cours du temps, 2 aspects physiques sont à considérer : la gravité et les collisions, qui sont considérées comme des chocs rigides.
+Initialement, les particules sont émises depuis un point fixe, que l'on nommera par la suite "puits", chacune étant créée avec une durée de vie limitée et déterminée aléatoirement dans un intervalle, un vecteur vitesse de direction et de norme aléatoire ainsi qu'une couleur.
+On dispose également d'une image qui doit être utilisée comme un lutin pour l'affichage des particules.
+
+Le second aspect de ce TP s'intéresse à la sélection graphique d'un objet pendant l'exécution, plus précisément à la sélection 3D par couleur.
+Il doit être possible de sélectionner des particules en cliquant dessus dans la fenêtre.
+Une fois sélectionnée, la particule concernée est affichée en noir pour qu'elle soit aisément reconnaissable à l'écran et puisse être réinitialisée, c'est-à-dire renvoyée au puits sous la forme d'une toute nouvelle particule.
+Enfin, la sélection simultanée de multiples particules doit être possible, et dans ce cas la ré-initialisation doit s'appliquer à l'ensemble des particules sélectionnées.

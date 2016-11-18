@@ -1,0 +1,49 @@
+\gdef\thesection{Appendix \Alph{section}}
+\section{Mouvement des particules}
+\label{sec:mouvement}
+\begin{lstlisting}
+void avancerParticules(unsigned int i)
+{
+	particules[i].tempsDeVieRestant -= deltaT;
+
+	for (unsigned int j = 0 ; j < 3; j++)
+	{
+		// avancer la particule
+		particules[i].position[j] += particules[i].vitesse[j] * deltaT;
+	}
+	// Mettre à jour la vitesse
+	particules[i].vitesse[2] -= gravite * deltaT;
+	
+	for (unsigned int j = 0 ; j < 3; j++)
+	{
+		// vérifier les collisions
+		if (particules[i].position[j] <= bMin[j] || particules[i].position[j] >= bMax[j])
+		{
+			particules[i].vitesse[j] = - particules[i].vitesse[j];
+		}
+	}
+	
+	if (particules[i].tempsDeVieRestant <= 0)
+	{
+		initPart(particules[i]);
+	}
+}
+\end{lstlisting}
+
+\gdef\thesection{Appendix \Alph{section}}
+\section{Dépassement lors des collisions}
+\label{sec:depassement}
+\begin{figure}[h!tbp]
+	\hspace*{-4.5em} \centering \includegraphics[width=0.90\paperwidth]{{depassement}.png}
+	\centering \caption{\small Dépassement des particules lors des collisions}
+	\label{fig:depassement}
+\end{figure}
+
+\gdef\thesection{Appendix \Alph{section}}
+\section{Dépassement lors des collisions}
+\label{sec:echappement}
+\begin{figure}[h!tbp]
+	\hspace*{-4.5em} \centering \includegraphics[width=0.90\paperwidth]{{echappement}.png}
+	\centering \caption{\small Échappement de particules au niveau de la paroi supérieure}
+	\label{fig:echappement}
+\end{figure}
