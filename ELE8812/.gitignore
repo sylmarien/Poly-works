@@ -1,0 +1,11 @@
+*.aux
+TP1/Rapport.log
+*.out
+TP1/Rapport.synctex.gz
+TP1/amelioration.asv
+*.asv
+TP1/BarbaraBilVar.tif
+TP1/BarbaraPpvVar.tif
+*.log
+*.gz
+TP2/rapport/Rapport.pdf

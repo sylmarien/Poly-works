@@ -1,0 +1,11 @@
+\select@language {french}
+\contentsline {section}{\numberline {1}Introduction}{1}{section.1}
+\contentsline {section}{\numberline {2}Transformations g\'eom\'etriques}{1}{section.2}
+\contentsline {subsection}{\numberline {2.1}Changement d'\'echelle}{1}{subsection.2.1}
+\contentsline {subsection}{\numberline {2.2}Effet de l'interpolation}{1}{subsection.2.2}
+\contentsline {section}{\numberline {3}D\'ebruitage par filtrage spatial}{1}{section.3}
+\contentsline {section}{\numberline {4}Am\'elioration d'images}{1}{section.4}
+\contentsline {subsection}{\numberline {4.1}Correction de l'exposition}{1}{subsection.4.1}
+\contentsline {paragraph}{}{1}{section*.2}
+\contentsline {subsection}{\numberline {4.2}Affinage de l'image}{2}{subsection.4.2}
+\contentsline {subsection}{\numberline {4.3}Egalisation d'histogramme}{2}{subsection.4.3}

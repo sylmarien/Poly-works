@@ -1,0 +1,274 @@
+\documentclass[12pt]{article}
+\usepackage[frenchb]{babel} 
+\usepackage[T1]{fontenc}
+\usepackage[latin1]{inputenc}
+%\usepackage{lmodern} 
+\usepackage{graphicx}
+\usepackage{multirow}
+\usepackage[top=2.5cm, bottom=2.5cm, left=2.5cm , right=2.5cm]{geometry}
+%\usepackage{amsmath}
+%\usepackage{amsthm}
+%\usepackage{amsfonts}
+\usepackage{empheq}
+\usepackage{setspace}
+\usepackage{hyperref}
+\hypersetup{pdftitle = {ELE8812 - Rapport de laboratoire}, pdfauthor={Julien Antoine}}
+\usepackage{color}
+\usepackage{subfigure}
+\usepackage{fancyvrb}
+\usepackage{SIunits}
+\usepackage{numprint}
+\usepackage{enumitem}
+\usepackage{calc}
+\usepackage{listings}
+\usepackage{float}
+\usepackage{cellspace}
+\cellspacetoplimit=4pt
+\cellspacebottomlimit=4pt
+
+% ----------------------------------- FANCY HEADER -----------------------------------
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\renewcommand{\headrulewidth}{0.5pt}
+%\fancyhead[C]{\textbf{page \thepage}} 
+\fancyhead[L]{}
+\fancyhead[R]{Rapport de laboratoire 3}
+
+\renewcommand{\footrulewidth}{0.5pt}
+\fancyfoot[C]{\textbf{\thepage}} 
+\fancyfoot[L]{Polytechnique Montréal}
+\fancyfoot[R]{ELE8812}
+% ------------------------------------------------------------------------------------
+
+
+\providecommand{\e}[1]{\ensuremath{\cdot 10^{#1}}}
+\newcommand{\question}{\noindent$\bullet$\;\;}
+\newcommand{\eau}{\ensuremath{\text{H}_2 \text{O}}}
+\newcommand{\dio}{\ensuremath{\text{CO}_2}}
+%\addto\captionsfrancais{\renewcommand{\chaptername}{Labo}}
+
+\begin{document}
+
+\hyphenation{HyperLogLog experimental techno-logy according develop-ment}
+
+\begin{titlepage}
+\newcommand{\HRule}{\rule{\linewidth}{0.5mm}} % Defines a new command for the horizontal lines, change thickness here
+
+%-------------------------------------------------------------------------------------
+%	LOGO SECTION
+%-------------------------------------------------------------------------------------
+\raggedright
+\includegraphics[width = 0.33\textwidth]{../../logo}\\[5cm] 
+\centering
+%-------------------------------------------------------------------------------------
+%	TITLE SECTION
+%-------------------------------------------------------------------------------------
+\HRule \\[0.4cm]
+{ \huge \bfseries ELE8812 -- Rapport de laboratoire 3}\\[0.4cm] 
+{ \Large \bfseries Restauration d'images}\\
+\HRule \\[1cm]
+%-------------------------------------------------------------------------------------
+%	AUTHOR SECTION
+%-------------------------------------------------------------------------------------
+\begin{minipage}{0.45\textwidth}
+\begin{center} 
+\large
+Julien \textsc{Antoine}\\
+1813026
+\end{center}
+\end{minipage}
+~
+\begin{minipage}{0.45\textwidth}
+\begin{center} 
+\large
+Maxime \textsc{Schmitt}\\
+1719088
+\end{center}
+\end{minipage}\\[8cm]
+%-------------------------------------------------------------------------------------
+%	DATE SECTION
+%-------------------------------------------------------------------------------------
+\begin{center}
+{\Large 24 février 2016}
+\end{center}
+%-------------------------------------------------------------------------------------
+\vfill 
+\end{titlepage}
+
+%\tableofcontents
+
+
+\section{Introduction}
+Ce troisième travail pratique a pour sujet la restauration d'images, plus particulièrement l'étude des flous de mouvement. Les transformations ont lieu dans les domaines spatial et spectral, dépendant de l'application.
+
+
+
+\section{Dégradation de type bougé}
+La réponse fréquentielle de la dégradation lors d'un mouvement de type bougé de direction et vitesse constantes est donnée par
+\begin{equation}
+	H(u,v) = \frac{\sin\left(\pi(ua+bv)\right)}{\left(\pi(ua+bv)\right)} e^{-i\pi(ua+bv)}
+\end{equation}
+où $a$ et $b$ sont les coordonnées du vecteur de déplacement (en proportion de la taille de l'image). En choisissant $a = b = 0,1$, on obtient le module représenté à la figure~\ref{Hmod}, et en prenant la transformée de Fourier inverse, l'allure de $h(x,y)$, représentée à la figure~\ref{hxy}.
+
+\begin{figure}[!h] 
+	\centering
+	\subfigure[Réponse fréquentielle]{
+		\includegraphics[width = 0.46\textwidth]{../images/H}
+		\label{Hmod} }
+	\quad
+	\subfigure[Filtre spatial]{
+		\includegraphics[width = 0.46\textwidth]{../images/ifftDeH}
+		\label{hxy} }
+	\caption{Dégradation} 
+	\label{}
+\end{figure}
+
+Pour obtenir le masque $k(x,y)$ (figure~\ref{kxy}), il ne reste plus qu'à recadrer $h(x,y)$ sur la partie contenant l'information, à savoir le coin en haut à droite. 
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width = 0.3\textwidth]{../images/hs}
+  \caption{Masque de taille réduite $k(x,y)$}
+  \label{kxy}
+\end{figure}
+
+\subsection{Application de la dégradation}
+Pour appliquer la dégradation créée précédemment à la figure~\ref{depart}, deux possibilités existent:
+\begin{description}
+  \item[Domaine spatial:]{on convolue l'image originale avec le masque $k(x,y)$ de la figure~\ref{kxy}.}
+  \item[Domaine fréquentiel:]{on multiplie la transformée de Fourier de l'image originale avec $H(u,v)$, après avoir effectué un \texttt{padding} afin de récupérer une image à coefficients réels lors de la transformée inverse.}
+\end{description}
+
+\begin{figure}[!h]
+  \centering
+  \includegraphics[width = 0.35\textwidth]{../images/depart}
+  \caption{Image originale}
+  \label{depart}
+\end{figure}
+
+La figure~\ref{imbougee} permet de comparer les résultats obtenus avec les deux approches. L'application dans le domaine spatial (figure~\ref{ims}) fournit un meilleur résultat, car la structure originale est bien conservée, tandis que dans le domaine fréquentiel (figure~\ref{imf}), on observe également une sorte de translation de l'image, et l'apparition d'un rectangle noir en haut de l'image.
+
+\begin{figure}[H] 
+	\centering
+	\subfigure[dans le domaine spatial]{
+		\includegraphics[width = 0.46\textwidth]{../images/imBougeeSpatiale2}
+		\label{ims} }
+	\quad
+	\subfigure[dans le domaine fréquentiel]{
+		\includegraphics[width = 0.46\textwidth]{../images/imBougeeSpectrale2}
+		\label{imf} }
+	\caption{Application de la dégradation de type bougé} 
+	\label{imbougee}
+\end{figure}
+
+
+\subsection{Application d'un bruit gaussien}
+Appliquons maintenant à l'image~\ref{ims} un bruit blanc gaussien de moyenne nulle et de variance 10. L'image résultante est représentée à la figure~\ref{imdegradee}, et sera utilisée dans la section suivante.
+
+\begin{figure}[!h]
+  \centering
+  \includegraphics[width = 0.55\textwidth]{../images/imDegradee}
+  \caption{Image dégradée}
+  \label{imdegradee}
+\end{figure}
+
+
+
+\section{Restauration dans le domaine fréquentiel}
+\subsection{Restauration par filtrage de Wiener}
+Le filtre de Wiener a la particularité de tenir compte du bruit de l'image lors de l'application du filtre inverse. Il s'écrit
+\begin{equation}
+\label{eqWienerOriginal}
+	W(u,v) = \frac{H^\star(u,v)}{\vert H(u,v)\vert^2 + \frac{S_\eta(u,v)}{S_f(u,v)}}
+\end{equation}
+où $^\star$ représente le complexe conjugué, $S_\eta$ la densité spectrale du bruit, et $S_f$ la densité spectrale de l'image originale.
+Si ces deux derniers sont des processus gaussiens blancs, ils ne varient pas en fréquence et sont dès lors des constantes, et donc leur quotient l'est également: on le désigne alors par $\lambda$, ce qui simplifie \eqref{eqWienerOriginal} en
+\begin{equation}
+\label{EqWiener}
+	W(u,v) = \frac{H^\star(u,v)}{\vert H(u,v)\vert^2 + \lambda}
+\end{equation}
+La constante $\lambda$ permet au dénominateur de ne pas valoir 0, et ainsi éviter d'amplifier trop le bruit. La figure~\ref{wiener} montre l'importance du $\lambda$ dans l'équation \eqref{EqWiener}. Lorsqu'il vaut 0, le bruit de l'image dégradée est beaucoup trop amplifié, ce qui résulte en une image complètement illisible. Pour une valeur de 0,2, le bruit n'affecte plus la restauration, mais le flou demeure important. Lorsque $\lambda = 0,02$, le texte redevient lisible, l'image est mieux restaurée malgré la présence d'artefacts en bas et à droite. Enfin, si l'on diminue encore $\lambda$ d'un facteur 10, le flou est complètement effacé, mais l'image devient très sombre et les artefacts se multiplient.
+
+\begin{figure}[!h]
+  \centering
+  \includegraphics[width = \textwidth]{../images/lambda4}
+  \caption{Filtre de Wiener appliqué à l'image dégradée}
+  \label{wiener}
+\end{figure}
+
+
+
+\subsection{Moindres carrés pénalisés dans le domaine fréquentiel}
+
+
+On est dans le cas d'une structure linéaire avec un bruit additif, donc on sait que l'on a :
+
+\begin{equation}
+\label{EqRelation}
+	g = Hf + \eta
+\end{equation}
+
+De plus, on a supposé que le bruit et l'image étaient des processus gaussiens :
+
+\begin{equation}
+\begin{aligned}
+\label{EqDistribs}
+	p_N : \mathcal{N}(0, \sigma_N^2\cdot R_N)\\
+	p_F : \mathcal{N}(0, \sigma_F^2\cdot R_F)
+\end{aligned}
+\end{equation}
+
+Où $\sigma_N^2$ et $\sigma_F^2$ sont les variances du bruit et de l'image respectivement et $R_N$ et
+$R_F$ les matrices de covariance normalisées du bruit et de l'image respectivement.
+
+Avec l'équation~\ref{EqRelation} on voit que si on suppose \textit{f} connue, alors la densité observée est identique à celle du bruit excepté que sa moyenne est décalée de \textit{Hf}. On en déduit donc la distribution de probabilité conditionnelle suivante :
+\begin{equation}
+\label{EqProbaCond}
+	p_{G|F=f} = \mathcal{N}(Hf, \sigma_N^2.R_N)
+\end{equation}
+%
+Donc en particulier on obtient l'expression de l'estimée de l'image:
+\begin{equation}
+\begin{aligned}
+\label{EqEstimeeImage}
+	\hat{f} &= \operatornamewithlimits{argmax}_f\left[\exp\left(-\frac{(g-Hf)^{t}R_N^{-1}(g-Hf)}{2\sigma_N^2}-\frac{f^tR_F^{-1}f}{2\sigma_F^2}\right)\right]\\
+	&= \operatornamewithlimits{argmin}_f\left(\frac{(g-Hf)^{t}R_N^{-1}(g-Hf)}{2\sigma_N^2}-\frac{f^tR_F^{-1}f}{2\sigma_F^2}\right)
+\end{aligned}
+\end{equation}
+%
+Et on obtient alors l'expression suivante :
+\begin{equation}
+\begin{aligned}
+\label{Eqf}
+	\hat{f} = \left(H^tR_N^{-1}H + \frac{\sigma_N^2}{\sigma_F^2}R_F^{-1}\right)^{-1}H^tR_N^{-1}g\\
+	\left(H^tR_N^{-1}H + \frac{\sigma_N^2}{\sigma_F^2}R_F^{-1}\right)\hat{f} = H^tR_N^{-1}g
+\end{aligned}
+\end{equation}
+%
+Et si l'on ajoute maintenant l'hypothèse que le bruit est un processus blanc, i.e. $R_N$ est la matrice identité, on obtient bien une expression de la forme demandée :
+\begin{equation}
+\label{EqFinale}
+	\left(H^tH + \frac{\sigma_N^2}{\sigma_F^2}R_F^{-1}\right)\hat{f} = H^tg
+\end{equation}
+%
+Avec les notations de l'énoncé on a donc :
+\begin{equation}
+\begin{aligned}
+\label{lambaQ}
+	&\lambda = \frac{\sigma_N^2}{\sigma_F^2}\\
+	&Q = R_F^{-1}
+\end{aligned}
+\end{equation}
+%
+Dans le cas d'un filtrage par moindres carrés contraint, on a (équation 5.9-5 du livre) :
+\begin{equation}
+\label{QCarreContraint}
+	Q = \begin{bmatrix} 0 & -1 & 0 \\ -1 & 4 & -1 \\ 0 & -1 & 0 \end{bmatrix}
+\end{equation}
+%
+$Q$ est donc l'opérateur Laplacien. On en déduit donc qu'en comparaison du filtre de Wiener (pour lequel ce terme était constant) on aura un filtre qui va mieux extraire les contours dans l'image.
+
+\section{Conclusion}
+Dans ce TP nous avons pu nous familiariser avec la notion de dégradation d'image ainsi que la reconstruction d'une telle image dégradée. Après avoir généré une image dégradée à la fois par du bruit gaussien blanc mais aussi avec un flou de mouvement, nous avons étudié deux filtres permettant de reconstruire une image de meilleure qualité et implémenté le filtre de Wiener.
+
+\end{document}

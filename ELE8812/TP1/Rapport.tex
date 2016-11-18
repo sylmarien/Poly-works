@@ -1,0 +1,308 @@
+\documentclass[12pt]{article}
+\usepackage[frenchb]{babel} 
+\usepackage[T1]{fontenc}
+\usepackage[latin1]{inputenc}
+%\usepackage{lmodern} 
+\usepackage{graphicx}
+\usepackage{multirow}
+\usepackage[top=2.5cm, bottom=2.5cm, left=2.5cm , right=2.5cm]{geometry}
+%\usepackage{amsmath}
+%\usepackage{amsthm}
+%\usepackage{amsfonts}
+\usepackage{empheq}
+\usepackage{setspace}
+\usepackage{hyperref}
+\hypersetup{pdftitle = {ELE8812 - Rapport de laboratoire}, pdfauthor={Julien Antoine}}
+\usepackage{color}
+\usepackage{subfigure}
+\usepackage{fancyvrb}
+\usepackage{SIunits}
+\usepackage{numprint}
+\usepackage{enumitem}
+\usepackage{calc}
+\usepackage{listings}
+\usepackage{float}
+\usepackage{cellspace}
+\cellspacetoplimit=4pt
+\cellspacebottomlimit=4pt
+
+% ----------------------------------- FANCY HEADER -----------------------------------
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\renewcommand{\headrulewidth}{0.5pt}
+%\fancyhead[C]{\textbf{page \thepage}} 
+\fancyhead[L]{}
+\fancyhead[R]{Rapport de laboratoire 1}
+
+\renewcommand{\footrulewidth}{0.5pt}
+\fancyfoot[C]{\textbf{\thepage}} 
+\fancyfoot[L]{Polytechnique Montréal}
+\fancyfoot[R]{ELE8812}
+% ------------------------------------------------------------------------------------
+
+
+\providecommand{\e}[1]{\ensuremath{\cdot 10^{#1}}}
+\newcommand{\question}{\noindent$\bullet$\;\;}
+\newcommand{\eau}{\ensuremath{\text{H}_2 \text{O}}}
+\newcommand{\dio}{\ensuremath{\text{CO}_2}}
+%\addto\captionsfrancais{\renewcommand{\chaptername}{Labo}}
+
+\begin{document}
+
+\hyphenation{HyperLogLog experimental techno-logy according develop-ment}
+
+\begin{titlepage}
+\newcommand{\HRule}{\rule{\linewidth}{0.5mm}} % Defines a new command for the horizontal lines, change thickness here
+
+%-------------------------------------------------------------------------------------
+%	LOGO SECTION
+%-------------------------------------------------------------------------------------
+\raggedright
+\includegraphics[width = 0.33\textwidth]{../logo}\\[5cm] 
+\centering
+%-------------------------------------------------------------------------------------
+%	TITLE SECTION
+%-------------------------------------------------------------------------------------
+\HRule \\[0.4cm]
+{ \huge \bfseries ELE8812 -- Rapport de laboratoire 1}\\[0.4cm] 
+{ \Large \bfseries Traitements élémentaires dans le domaine spatial}\\
+\HRule \\[1cm]
+%-------------------------------------------------------------------------------------
+%	AUTHOR SECTION
+%-------------------------------------------------------------------------------------
+\begin{minipage}{0.45\textwidth}
+\begin{center} 
+\large
+Julien \textsc{Antoine}\\
+1813026
+\end{center}
+\end{minipage}
+~
+\begin{minipage}{0.45\textwidth}
+\begin{center} 
+\large
+Maxime \textsc{Schmitt}\\
+1719088
+\end{center}
+\end{minipage}\\[8cm]
+%-------------------------------------------------------------------------------------
+%	DATE SECTION
+%-------------------------------------------------------------------------------------
+\begin{center}
+{\Large 27 janvier 2016}
+\end{center}
+%-------------------------------------------------------------------------------------
+\vfill 
+\end{titlepage}
+
+%\tableofcontents
+
+
+\section{Introduction}
+Cette première séance de travail pratique a pour objectif d'appliquer les traitements élémentaires dans le domaine spatial vus au cours.
+La première partie consiste à redimensionner une image selon un facteur donné en utilisant l'approximation des plus proches voisins.
+La deuxième application consiste à supprimer le bruit d'une image à l'aide de différents filtres spatiaux, tels que les filtres moyen ou médian, et de comparer les résultats que chacun apporte.
+Enfin, la dernière partie a pour but d'améliorer une image floue et très sombre afin de rendre visible son contenu.
+
+
+\section{Transformations géométriques}
+\subsection{Changement d'échelle}
+Le code commenté peut être trouvé dans le fichier \texttt{mae\_ppv.m}.
+
+Pour résumé les explications
+données en commentaires, les étapes pour passer de \texttt{im} à \texttt{ims} sont les suivantes :
+\begin{itemize}
+	\item Calcul des dimensions de \texttt{ims}
+	\item Calcul des coordonnées des milieux des pixels dans \texttt{ims} à partir des coordonnées des points en haut à gauche de ceux-ci (coordonnées initiales)
+	\item Calcul des coordonnées des ces milieux dans le repère de l'image initiale \texttt{ims}
+	\item Calcul des coordonnées des pixels à utiliser pour le pixel de milieu donné (premier pixel en haut à gauche du milieu considéré)
+	\item Construction de l'image avec les pixels ainsi déterminés
+\end{itemize}
+
+\subsection{Effet de l'interpolation}
+Le code permettant de réaliser les tâches demandées dans cette partie peut être trouvé dans le fichier \texttt{partie2.m}.
+
+\paragraph{}
+On constate sur la figure~\ref{BarbaraTriplet} que la méthode d'interpolation par Plus Proche Voisin entraîne un rendu qui est davantage crénelé là où la méthode bilinéaire a un rendu plus doux, avec une impression de flou, ce qui est logique puisque cette dernière calcule les nouvelles valeurs des pixels à l'aide de plusieurs pixels originaux là ou la première choisit un unique pixel pour déterminer la nouvelle valeur. Dans le premier cas les contours sont donc adoucis, progressifs, alors que dans le second il auront tendance à être plus abrupts.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width = \textwidth]{BarbaraTriplet.png}
+	\caption{De gauche à droite : Image originale, image interpolée avec la méthode bilinéaire, image interpolée avec la méthode du Plus Proche Voisin}
+	\label{BarbaraTriplet}
+\end{figure}
+
+\section{Débruitage par filtrage spatial}
+Le code permettant de réaliser les tâches demandées dans cette partie peut être trouvé dans les fichiers \texttt{filtreImage.m} et \texttt{partie3.m}.
+
+On voit sur la figure~\ref{genouQuad} que le filtre moyen entraîne une image avec peu de bruit mais a tendance à rendre les contours des formes plus flous. Le filtre à moyenne pondérée laisse davantage de bruit dans l'image mais laisse également les contours plus nets que le filtre moyen. Le filtre médian quand à lui laisse du bruit dans l'image davantage que les deux autres méthode et produit une image
+moins nette également que les deux autres filtres. On voit aisément le bruit dans son histogramme (figure~\ref{genouHistQuad}).
+
+\begin{figure}[!p]
+  \centering
+  \includegraphics[width = 0.8\textwidth]{genouQuad}
+  \caption{Résultats des différents filtres appliqué à l'image \textsf{IRM\_genou.tif}}
+  \label{genouQuad}
+\end{figure}
+
+\begin{figure}[!p]
+  \centering
+  \includegraphics[width = 0.8\textwidth]{genouHistQuad}
+  \caption{Histogrammes des images filtrées}
+  \label{genouHistQuad}
+\end{figure}
+
+
+
+\newpage
+\section{Amélioration d'images}
+Cette section a pour but d'améliorer une image de médiocre qualité, tant du point de vue intensité que netteté. L'image considérée est représentée à la figure \ref{lune}.
+Le code permettant de réaliser les tâches demandées dans cette partie peut être trouvé dans le fichier \texttt{partie4.m}.
+
+\begin{figure}[!h]
+  \centering
+  \includegraphics[width = 0.3\textwidth]{Lune}
+  \caption{Image originale \textsf{'Lune.tif'}}
+  \label{lune}
+\end{figure}
+
+
+\subsection{Correction de l'exposition}
+La première étape consiste à améliorer l'exposition (ou intensité) de l'image très largement sous-exposée. En effet, la figure \ref{lune} est tellement sombre qu'il est impossible de distinguer la lune. Pour mieux s'en apercevoir, considérons l'histogramme de l'image, représenté à la figure~\ref{histoLune}. Les niveaux apparaissent clairement regroupés sur la gauche, principalement entre 0 et 0,1 (à noter que l'image a été normalisée au préalable, ses valeurs possibles varient donc entre 0 et 1).
+L'objectif est donc de rehausser les tons de gris de manière à décaler l'histogramme vers la droite et ainsi rendre l'image plus lisible.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width = 0.75\textwidth]{histoLune}
+  \vspace{-0.3cm}
+  \caption{Histogramme de l'image \textsf{'Lune.tif'}}
+  \label{histoLune}
+\end{figure}
+
+\paragraph{}
+Une transformation appropriée est la transformation gamma:
+\begin{equation}
+	T(r) = r^\gamma
+\end{equation}
+Elle a l'avantage de dépendre d'un paramètre, ce qui permet ainsi à l'utilisateur de pouvoir l'adapter en fonction du cas. En choisissant $\gamma = 0.3$, on obtient la figure \ref{gamma03}.
+
+\paragraph{}
+On observe une nette amélioration de l'image (figure \ref{luneExpo}), où l'on peut désormais déceler la présence de la lune. La figure \ref{LuneHisto} permet quant à elle d'observer l'effet de la transformation sur l'histogramme: il a été décalé vers la droite.
+
+\begin{figure}[!h] 
+	\centering
+	\subfigure[Images]{
+		\includegraphics[width = \textwidth]{luneExpo2}
+		\label{luneExpo} }
+	\quad
+	\subfigure[Histogrammes]{
+		\includegraphics[width = \textwidth]{LuneHisto}
+		\label{LuneHisto} }
+	\caption{Effet de la transformation gamma ($\gamma = 0.3$)} 
+	\label{gamma03}
+\end{figure}
+
+\paragraph{}
+On conclut les transformations sur l'intensité par un étalement de l'histogramme de l'image. Cela a pour effet d'augmenter la luminosité globale de l'image comme on peut le voir sur la figure~\ref{luneHistoEtale} et on voit que l'histogramme est encore davantage décalé vers la droite sur la figure~\ref{luneHistoEtaleHist}.
+
+\begin{figure}[!p]
+  \centering
+  \includegraphics[width = 0.5\textwidth]{LuneHistoEtale}
+  \caption{Résultat de l'étalement de l'histogramme sur l'image}
+  \label{luneHistoEtale}
+\end{figure}
+
+\begin{figure}[!p]
+  \centering
+  \includegraphics[width = 0.6\textwidth]{LuneHistoEtaleHist}
+  \caption{Histogramme après étalement}
+  \label{luneHistoEtaleHist}
+\end{figure}
+
+
+
+\newpage
+\subsection{Affinage de l'image}
+La deuxième étape consiste à améliorer la netteté de l'image, elle est appelée \emph{affinage}. Pour y parvenir, plusieurs méthodes sont possibles, mais nous nous concentrerons sur l'utilisation d'un masque flou.
+Le principe est simple: en prenant la différence entre l'image et originale et une version floue de celle-ci, on obtient essentiellement une image des contours, c'est le masque. L'addition du masque et de l'image originale permet ainsi de rehausser ces contours, et donc d'améliorer la netteté.
+
+\paragraph{}
+Il faut donc commencer par obtenir une version floue de l'image: un filtre gaussien est idéal pour y parvenir. Ce dernier prend 2 paramètres: l'écart-type $\sigma$ et sa taille (en général $3\times 3$ ou $5\times 5$), ce qui permettra plus de liberté lors de l'ajustement de la netteté.
+Une fois l'image floue obtenue, on en calcule la différence avec l'image de base pour obtenir le masque flou. Enfin, ce dernier est ajouté à l'image originale selon la formule
+\begin{equation}
+\label{masque}
+	g(x,y) = f(x,y) + c \cdot\underbrace{\left(f(x,y) - G_\sigma \otimes f(x,y) \right)}_{\textrm{masque flou}}
+\end{equation}
+où $f(x,y)$ est l'image originale et $G_\sigma$ est le filtre gaussien qu'on lui applique.
+On remarque l'apparition d'un troisième paramètre, $c$, appelé \emph{coefficient de rehaussement}. Il permet d'ajuster au mieux l'intensité du masque flou.
+
+\subsubsection{Influence des paramètres}
+\paragraph{Taille du filtre gaussien}
+Plus la taille est élevée et plus la netteté augmente. On observe cependant un seuil (à l'\oe il nu du moins) à partir duquel l'augmentation de la taille ne change plus rien au résultat final. Ce seuil est la taille par défaut du filtre dans \textsf{Matlab}, à savoir \texttt{2*ceil(2*sigma) + 1}.
+%2*ceil(2*sigma) + 1
+
+\paragraph{Ecart-type du filtre}
+De nouveau, la netteté augmente avec l'écart-type du filtre. Ceci est normal puisque plus l'image est rendue floue, plus la différence avec l'originale sera flagrante et le masque fort.
+
+\paragraph{Coefficient de rehaussement}
+En analysant la formule \eqref{masque}, on peut deviner que le coefficient $c$ et la netteté seront liés puisque le premier multiplie le masque appliqué à l'image. Ce raisonnement est bien validé en pratique.
+
+\subsubsection{Résultat final}
+Après avoir étudié l'effet de chacun des paramètres, nous avons choisi les valeurs
+\begin{eqnarray*}
+	\gamma & = & 0.5\\
+	n & = & 3\\
+	c & = & 10
+\end{eqnarray*}
+pour lesquelles on obtient la figure \ref{affinage}.
+
+\begin{figure}[!h] 
+	\centering
+	\subfigure[Image de départ]{
+		\includegraphics[width = 0.36\textwidth]{luneClaire}
+		\label{} }
+	\quad
+	\subfigure[Image affinée ($\sigma = 0,5$ et $c=10$)]{
+		\includegraphics[width = 0.36\textwidth]{netteG05T3C10}
+		\label{affinage} }
+	\caption{Effet de l'opération d'affinage} 
+	\label{}
+\end{figure}
+
+
+\subsection{Egalisation d'histogramme}
+On égalise alors l'histogramme de l'image et on constate alors que l'image est dans l'ensemble trop blanche (figure~\ref{egal}). Cela est dû au fait que l'égalisation transforme l'histogramme de telle sorte que la valeur la plus à gauche (donc la plus noire) soit égale au nombre de pixels les plus foncés (ici noirs) sur le nombre de pixel totaux. Dans le cas de notre image juste avant l'égalisation, ce calcul donne 0.6434. Le noir est donc transformé en un gris clair et, comme la transformation est croissante, tous les pixels initialement plus clairs le seront encore après transformation, on ne trouve rien de plus foncé que cette valeur dans l'image résultante.
+
+\begin{figure}[H] 
+	\centering
+	\subfigure[Image améliorée]{
+		\includegraphics[width = 0.36\textwidth]{netteG05T3C10}
+		\label{} }
+	\quad
+	\subfigure[Image améliorée égalisée]{
+		\includegraphics[width = 0.36\textwidth]{luneEgalisee}
+		\label{} }
+	\caption{Effet de l'égalisation d'histogramme} 
+	\label{egal}
+\end{figure}
+
+\paragraph{}
+On résout ce problème en effectuant à nouveau un étalement d'histogramme qui permet à d'avoir des nuances de gris qui s'étalent sur l'ensemble allant de 0 à 1 (figure~\ref{etalHist}). On obtient alors une image finale de bonne qualité (figure~\ref{luneEgaliseeEtEtalee}).
+
+\begin{figure}[!h]
+  \centering
+  \includegraphics[width = \textwidth]{luneEgalHisto}
+  \caption{Histogrammes avant et après étalement}
+  \label{etalHist}
+\end{figure}
+
+\begin{figure}[!h]
+  \centering
+  \includegraphics[width = 0.6\textwidth]{luneEgaliseeEtEtalee}
+  \caption{Image finale}
+  \label{luneEgaliseeEtEtalee}
+\end{figure}
+
+
+
+\end{document}

@@ -1,0 +1,381 @@
+\documentclass[12pt]{article}
+\usepackage[frenchb]{babel} 
+\usepackage[T1]{fontenc}
+\usepackage[latin1]{inputenc}
+%\usepackage{lmodern} 
+\usepackage{graphicx}
+\usepackage{multirow}
+\usepackage[top=2.5cm, bottom=2.5cm, left=2.5cm , right=2.5cm]{geometry}
+%\usepackage{amsmath}
+%\usepackage{amsthm}
+%\usepackage{amsfonts}
+\usepackage{empheq}
+\usepackage{setspace}
+\usepackage{hyperref}
+\hypersetup{pdftitle = {ELE8812 - Rapport de laboratoire}, pdfauthor={Julien Antoine}}
+\usepackage{color}
+\usepackage{subfigure}
+\usepackage{fancyvrb}
+\usepackage{SIunits}
+\usepackage{numprint}
+\usepackage{enumitem}
+\usepackage{calc}
+\usepackage{listings}
+\usepackage{float}
+\usepackage{cellspace}
+\cellspacetoplimit=4pt
+\cellspacebottomlimit=4pt
+
+% ----------------------------------- FANCY HEADER -----------------------------------
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\renewcommand{\headrulewidth}{0.5pt}
+%\fancyhead[C]{\textbf{page \thepage}} 
+\fancyhead[L]{}
+\fancyhead[R]{Rapport de laboratoire 1}
+
+\renewcommand{\footrulewidth}{0.5pt}
+\fancyfoot[C]{\textbf{\thepage}} 
+\fancyfoot[L]{Polytechnique Montréal}
+\fancyfoot[R]{ELE8812}
+% ------------------------------------------------------------------------------------
+
+
+\providecommand{\e}[1]{\ensuremath{\cdot 10^{#1}}}
+\newcommand{\question}{\noindent$\bullet$\;\;}
+\newcommand{\eau}{\ensuremath{\text{H}_2 \text{O}}}
+\newcommand{\dio}{\ensuremath{\text{CO}_2}}
+%\addto\captionsfrancais{\renewcommand{\chaptername}{Labo}}
+
+\definecolor{mygreen}{RGB}{28,172,0} % color values Red, Green, Blue
+\definecolor{mylilas}{RGB}{170,55,241}
+
+\begin{document}
+	
+\lstset{language=Matlab,%
+	%basicstyle=\color{red},
+	breaklines=true,%
+	morekeywords={matlab2tikz},
+	keywordstyle=\color{blue},%
+	morekeywords=[2]{1}, keywordstyle=[2]{\color{black}},
+	identifierstyle=\color{black},%
+	stringstyle=\color{mylilas},
+	commentstyle=\color{mygreen},%
+	showstringspaces=false,%without this there will be a symbol in the places where there is a space
+	numbers=left,%
+	numberstyle={\tiny \color{black}},% size of the numbers
+	numbersep=9pt, % this defines how far the numbers are from the text
+	emph=[1]{for,end,break},emphstyle=[1]\color{red}, %some words to emphasise
+	%emph=[2]{word1,word2}, emphstyle=[2]{style},    
+}
+
+\hyphenation{HyperLogLog experimental techno-logy according develop-ment}
+
+\begin{titlepage}
+\newcommand{\HRule}{\rule{\linewidth}{0.5mm}} % Defines a new command for the horizontal lines, change thickness here
+
+%-------------------------------------------------------------------------------------
+%	LOGO SECTION
+%-------------------------------------------------------------------------------------
+\raggedright
+\includegraphics[width = 0.33\textwidth]{../../logo}\\[5cm] 
+\centering
+%-------------------------------------------------------------------------------------
+%	TITLE SECTION
+%-------------------------------------------------------------------------------------
+\HRule \\[0.4cm]
+{ \huge \bfseries ELE8812 -- Rapport de laboratoire 2}\\[0.4cm] 
+{ \Large \bfseries Traitements élémentaires dans le domaine fréquentiel}\\
+\HRule \\[1cm]
+%-------------------------------------------------------------------------------------
+%	AUTHOR SECTION
+%-------------------------------------------------------------------------------------
+\begin{minipage}{0.45\textwidth}
+\begin{center} 
+\large
+Julien \textsc{Antoine}\\
+1813026
+\end{center}
+\end{minipage}
+~
+\begin{minipage}{0.45\textwidth}
+\begin{center} 
+\large
+Maxime \textsc{Schmitt}\\
+1719088
+\end{center}
+\end{minipage}\\[8cm]
+%-------------------------------------------------------------------------------------
+%	DATE SECTION
+%-------------------------------------------------------------------------------------
+\begin{center}
+{\Large 10 février 2016}
+\end{center}
+%-------------------------------------------------------------------------------------
+\vfill 
+\end{titlepage}
+
+%\tableofcontents
+
+
+\section{Introduction}
+
+Dans le laboratoire précédent, nous avons effectué des manipulations sur des images en réalisant des
+manipulation sur celle-ci dans le domaine spatial. Dans le présent laboratoire, l'objectif est maintenant
+de réaliser des modifications aux résultats comparables mais en travaillant cette fois dans le domaine
+fréquentiel.
+
+La première partie est dédiée à une familiarisation avec la représentation fréquentielle d'une image. La
+deuxième partie vise à rehausser une image au travers de manipulations de son spectre. La troisième et
+dernière partie a pour objectif de retirer le tramage d'une image à l'aide d'un filtre de réjection que
+l'on doit adapter à l'image considérée.
+
+\section{Représentation fréquentielle}
+\subsection{Indexation des axes fréquentiels}
+
+La figure~\ref{part2FreqRéduites} illustre la représentation fréquentielle de l'image \textit{Voiture.tif} en coordonnées réduites, on propose également en figure~\ref{part2FreqBasiques} la 
+représentation standard à titre de comparaison.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width = 0.7\textwidth]{images/part2_freqBasiques.png}
+	\caption{Représentation fréquentielle de l'image sans transformation}
+	\label{part2FreqBasiques}
+\end{figure}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width = 0.7\textwidth]{images/part2_freqRéduites.png}
+	\caption{Représentation fréquentielle en coordonnées réduites de l'image}
+	\label{part2FreqRéduites}
+\end{figure}
+
+\subsection{Effet de la parité des dimensions de l'image}
+
+Les figures~\ref{part2_dimPairesComparaison} et~\ref{part2_dimImpairesComparaison} représentent,
+dans le cas d'une image de dimension respectivement paire et impaire, la comparaison des résultats de la
+reconstruction de l'image \textit{Voiture.tif} en utilisant \textit{ifftshift} ou \textit{fftshift}. On
+voit que l'utilisation de \textit{fftshift} au lieu d'\textit{ifftshift} est possible lorsque l'image est
+de dimension paire mais pas lorsqu'elle est de dimension impaire puisqu'on voit apparaître d'importants
+artefacts dans l'image reconstruite. Cela est dû entre autres au placement de la fréquence nulle qui
+n'est pas la même dans les deux cas lors du premier appel à \textit{fftshift}. En effet, lorsque la
+dimension est paire, la fréquence nulle est centrée, les autres fréquences sont symétriques et il n'y a
+pas de fréquence en plus ou moins 1/2. Au contraire, lorsque la dimension est impaire, la fréquence
+nulle est décalée d'un échantillon, et les autres fréquences sont symétriques sauf la fréquence à -1/2.
+Les fonctions \textit{ifftshift} et \textit{fftshift} ne fonctionnent donc pas de la même manière dans
+ce cas.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width = 0.75\textwidth]{images/part2_dimPairesComparaison.png}
+	\caption{Comparaison du résultat de l'utilisation de \textit{ifftshift} ou \textit{fftshift} sur la reconstruction de l'image dans le cas de dimensions paires}
+	\label{part2_dimPairesComparaison}
+\end{figure}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width = 0.75\textwidth]{images/part2_dimImpairesComparaison.png}
+	\caption{Comparaison du résultat de l'utilisation de \textit{ifftshift} ou \textit{fftshift} sur la reconstruction de l'image dans le cas de dimensions impaires}
+	\label{part2_dimImpairesComparaison}
+\end{figure}
+
+\newpage
+\section{Rehaussement dans le domaine de Fourier}
+\subsection{Rehaussement par masquage flou}
+Une manière de rehausser une image est d'utiliser le masquage flou dans le domaine spectral. La méthode consiste à appliquer un filtre passe-bas à l'image, de manière à éliminer ses détails. La différence entre l'image originale et l'image filtrée donne une image des détails de l'image. Le principe est alors d'additionner cette image des différences à l'image originale afin de rehausser les détails et contours de celle-ci. Notre implémentation utilise un filtre de Butterworth d'ordre 2.\\
+
+\lstinputlisting[language=Matlab,firstline=13,lastline=23,title=Rehaussement par masquage flou]{../src/rehaussement.m}
+
+\subsubsection{Variation de la fréquence de coupure}
+La figure \ref{fc} permet de remarquer que plus la fréquence de coupure augmente, et plus le rehaussement est faible. En effet, au plus la fréquence de coupure diminue, au plus de détails sont éliminés de l'image. En analysant la forme des filtres (à gauche), on constate que les fréquences coupées pour $f_c=50$ sont bien moins importantes que celles pour $f_c=5$. Dès lors, $f_c=50$ rehaussera les détails dont les fréquences sont supérieures à 50 pixels, tandis que $f_c=5$ rehaussera ceux avec des fréquences supérieures à 5 pixels, c'est-à-dire presque toute l'image y compris certaines textures.
+
+\begin{figure}[H] 
+	\centering
+	\subfigure[$f_c = 50$]{
+		\includegraphics[width = 0.46\textwidth]{images/luneFc50c1}
+		\label{} }
+	\quad
+	\subfigure[$f_c = 5$]{
+		\includegraphics[width = 0.46\textwidth]{images/luneFc5c1}
+		\label{} }
+	\caption{Influence de la fréquence de coupure à $c$ constant ($c=1$)} 
+	\label{fc}
+\end{figure}
+
+
+\subsubsection{Variation du coefficient de masquage}
+Comme pour le premier travail pratique -- les formules étant de même nature --, le coefficient de masquage définit l'intensité du rehaussement. Dès lors, pour une même fréquence de coupure, un coefficient de masquage $c$ plus important rehaussera plus les détails de l'image, et inversement.
+
+\begin{figure}[!h] 
+	\centering
+	\subfigure[$c=1$]{
+		\includegraphics[width = 0.46\textwidth]{images/luneFc50c1}
+		\label{} }
+	\quad
+	\subfigure[$c=3$]{
+		\includegraphics[width = 0.46\textwidth]{images/luneFc50c3}
+		\label{} }
+	\caption{Influence du coefficient de masquage $c$ à fréquence de coupure constante ($f_c=50$)} 
+	\label{}
+\end{figure}
+
+
+\subsubsection{Comparaison entre approches spatiale et spectrale}
+Nous avons donc implémenté le rehaussement par masquage flou à la fois dans le domaine spatial et dans le domaine spectral. La figure \ref{c3fc50s2} montre que les résultats obtenus sont très similaires, au point qu'il est impossible de distinguer de différence à l'\oe il nu. Elle a été obtenue avec les paramètres $\sigma=2$ pour le domaine spatial, $f_c=50$ pour le domaine spectral (un filtre gaussien a été utilisé cette fois afin de mieux correspondre à l'approche dans le domaine spatial), avec un coefficient de masquage $c=3$ pour les deux.
+
+\paragraph{}
+Pour ce qui est de l'implémentation, celle dans le domaine spatial est plus simple à mettre en \oe uvre puisqu'il suffit d'appliquer un filtre gaussien à l'image et d'effectuer une soustraction pour obtenir le masque, là où dans le domaine spectral il faut d'abord calculer la transformée de Fourier, puis appliquer un filtre passe-bas avant d'effectuer la transformée de Fourier inverse et enfin la soustraction avec l'image originale. Si on rassemble ces opérations dans une fonctions \texttt{filtpb}, la structure devient alors exactement la même.\\[0.5cm]
+
+\begin{minipage}{0.45\textwidth}
+	%\begin{center} 
+	\raggedright
+	\begin{lstlisting}[numbers=none,title=Domaine spatial]
+	ims = filtpb(im,fc,type,pad,n);
+	diff = im - ims;
+	imrf = im + c*diff;
+	\end{lstlisting}
+	%\end{center}
+\end{minipage}
+~
+\begin{minipage}{0.45\textwidth}
+	%\begin{center} 
+	\raggedleft
+	\lstinputlisting[language=Matlab,numbers=none,firstline=29,lastline=31,title=Domaine spectral]{../src/rehaussement.m}
+	%\end{center}
+\end{minipage}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width = 0.75\textwidth]{images/c3fc50s2}
+	\caption{Comparaison des résultats du rehaussement dans les 2 domaines}
+	\label{c3fc50s2}
+\end{figure}
+
+
+
+\subsection{Rehaussement par laplacien}
+La conclusion est la même que pour le masquage flou: les résultats obtenus spatialement et fréquentiellement sont très similaires (voir figure \ref{laplaceC025}), et l'implémentation dans le domaine spectral est plus ardue que dans le domaine spatial, de par la nature du laplacien en fréquentiel.
+
+\begin{figure}[!h]
+	\centering
+	\includegraphics[width = 0.75\textwidth]{images/laplaceC025}
+	\caption{Comparaison des résultats du rehaussement par laplacien dans les 2 domaines}
+	\label{laplaceC025}
+\end{figure}
+
+\begin{minipage}{0.45\textwidth}
+	\raggedright
+	\begin{lstlisting}[numbers=none]
+	L = [0 -1 0; -1 4 -1; 0 -1 0];
+	laplacian = imfilter(im,L);
+	ims = im + c*laplacian;
+	\end{lstlisting}
+\end{minipage}
+~
+\begin{minipage}{0.45\textwidth}
+	\raggedleft
+	\begin{lstlisting}[numbers=none]
+	u0 = M/2; v0 = N/2;
+	[u,v] = ndgrid(1:M,1:N);
+	duv = ((u-u0).^2 + (v-v0).^2);
+	duv = duv/max(max(duv));	
+	L = -4*pi^2*duv;
+	fuv = fftshift(fft2(im));
+	fxy = ifft2(ifftshift(L.*fuv));
+	imr = double(im) + c*abs(fxy);
+	imr = uint8(imr);
+	\end{lstlisting}
+\end{minipage}\\
+\vspace{0.2cm}
+\begin{minipage}{0.45\textwidth}
+	\begin{center}
+		Domaine spatial
+	\end{center}
+\end{minipage}
+~
+\begin{minipage}{0.45\textwidth}
+	\begin{center}
+		Domaine spectral
+	\end{center}
+\end{minipage}
+
+
+\subsubsection{Comparaison entre rehaussement par masquage flou et par laplacien}
+Tant bien pour les résultats que pour l'implémentation, l'approche par masquage flou nous paraît supérieure à celle par laplacien. Les résultats sont plus réalistes, et nécessitent moins d'attention aux échelles (normalisation). De plus, ils sont plus intuitifs, et dès lors plus facilement compréhensibles et modifiables. Enfin, on peut jouer sur plusieurs paramètres là où seul le coefficient de masquage permet de régler le rehaussement avec le laplacien.
+
+\newpage
+\section{Détramage par réjection de fréquences}
+
+Pour la construction du filtre de réjection, on a fait le choix pour la réponse fréquentielle du filtre
+de placer la fréquence nulle au voisinage du centre du tableau \textit{HH}. Le code peut être trouvé en 
+annexe C.
+
+Pour effectuer le détramage de l'image \textit{Voiture.tif}, on a tout d'abord construit le filtre
+coupant les fréquences représentées par les points les plus lumineux sur la représentation fréquentielle
+comme on peut l'observer sur la figure~\ref{part4FiltreBas}. Puis on a construit le filtre pour couper
+les fréquences représentées par les points moins lumineux sur la représentation fréquentielle comme on
+peut l'observer sur la figure~\ref{part4FiltreHaut}. Le résultat de la combinaison de ces deux filtres
+peut être observé sur la figure~\ref{part4FiltreComplet}, sur laquelle les trames dans l'images ont été
+lissées.
+
+Pour définir les paramètres adéquats à l'utilisation de notre filtre de réjection sur l'image, on a
+calculé comme fréquence de coupure un "point moyen" des points à couper ainsi qu'une largeur de bande
+dont la valeur est fonction de la différence de distance maximale entre le centre et un des points à
+couper (le coefficient de proportionnalité pour cette relation a été trouvé empiriquement et dénote donc
+d'une préférence personnelle sur le résultat final).
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width = \textwidth]{images/part4_filtreBas.png}
+	\caption{Effet du filtrage des fréquences correspondant aux points les plus lumineux de la représentation fréquentielle}
+	\label{part4FiltreBas}
+\end{figure}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width = \textwidth]{images/part4_filtreHaut.png}
+	\caption{Effet du filtrage des fréquences correspondant aux points les moins lumineux de la représentation fréquentielle}
+	\label{part4FiltreHaut}
+\end{figure}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width = \textwidth]{images/part4_filtreComplet.png}
+	\caption{Effet de la combinaison des filtres précédents}
+	\label{part4FiltreComplet}
+\end{figure}
+
+\section{Conclusion}
+Au cours de ce laboratoire, nous avons eu l'occasion de nous familiariser avec la représentation
+fréquentielle d'une image et nous avons pu aborder quelques techniques de manipulation de celle-ci.
+Lorsqu'on en vient à comparer les résultats obtenus pour le rehaussement d'image par les manipulations
+sur le domaine spatial et ceux par les manipulations du domaine spectral, on constate que, sur les
+techniques abordées dans le cadre de ces laboratoire, ceux-ci sont équivalents et pourront donc être
+utilisés de façon inter-changeable selon les spécificités de l'image. On retiendra aussi l'intérêt de la
+représentation spectrale pour obtenir de l'information supplémentaire sur l'image, que ce soit au niveau
+des motifs présents dans celle-ci mais également des artefacts qui pourraient y être présents, comme on
+a pu le voir dans le cas de la présence de trames.
+
+\newpage
+\section*{Annexe A - Code partie 2 : representation.m}
+\label{annexe2}
+\lstinputlisting{../src/representation.m}
+
+\newpage
+\section*{Annexe B - Code partie 3 : rehaussement.m}
+\label{annexe3}
+\lstinputlisting{../src/rehaussement.m}
+
+\newpage
+\section*{Annexe C - Code partie 4}
+\label{annexe4}
+\subsection*{rf\_rej.m}
+\lstinputlisting{../src/rf_rej.m}
+
+\subsection*{detramage.m}
+\lstinputlisting{../src/detramage.m}
+
+
+
+
+\end{document}
